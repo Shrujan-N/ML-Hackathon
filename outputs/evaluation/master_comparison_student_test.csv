@@ -2,4 +2,10 @@ model,top1_acc,macro_f1,log_loss,continuity,infer_ms_per_1k_rows,fit_seconds
 boosting_lightgbm,0.8607,0.7618,0.0703,0.9368,2.6359,10.4471
 boosting_xgboost,0.8608,0.7606,0.0704,0.9377,0.8671,22.2789
 boosting_hgb,0.8621,0.7643,0.0701,0.9368,3.8956,38.7483
-boosting_lightgbm_tuned,0.8597,0.7614,0.0697,0.9366,6.0187,22.9641
+model1_logistic_regression,0.8533,0.7362,0.0941,0.9308,0.1723,
+model2_distance_weighted_knn,0.8392,0.7067,0.2225,0.917,63.2386,
+model3a_random_forest,0.8559,0.7561,0.1676,0.9234,2.7139,
+model3b_extra_trees,0.8535,0.751,0.1823,0.9218,2.6461,
+boosting_lightgbm_tuned,0.8597,0.7614,0.0697,0.9366,6.433,
+model5_mlp_neural_network,0.857,0.7524,0.0719,0.9381,0.4974,
+model6_rbf_svm_nystroem,0.8493,0.7334,0.0935,0.9319,6.0043,

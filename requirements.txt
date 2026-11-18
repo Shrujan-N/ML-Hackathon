@@ -4,5 +4,15 @@ pydantic
 scikit-learn
 pandas
 numpy
+scipy
 joblib
+matplotlib
 folium
+lightgbm
+xgboost
+optuna
+torch
+streamlit
+streamlit-folium
+requests
+reportlab

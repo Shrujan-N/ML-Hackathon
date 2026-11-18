@@ -5,8 +5,8 @@
     "key_config": "C=1.0, solver=lbfgs, max_iter=300, StandardScaler",
     "artifact_path": "artifacts/model1_logistic_regression.joblib",
     "input_preprocessing": "artifacts/feature_scaler.joblib",
-    "train_time_sec": 12.784,
-    "inference_time_sec": 0.035,
+    "train_time_sec": 12.045,
+    "inference_time_sec": 0.047,
     "train_diag": {
       "binary_accuracy": 0.96655,
       "precision": 0.8391239163027182,
@@ -60,8 +60,8 @@
     "key_config": "k=15, weights=distance, kd_tree, 32k trip-stratified ref",
     "artifact_path": "artifacts/model2_distance_weighted_knn.joblib",
     "input_preprocessing": "artifacts/feature_scaler.joblib",
-    "train_time_sec": 0.068,
-    "inference_time_sec": 11.577,
+    "train_time_sec": 0.072,
+    "inference_time_sec": 13.207,
     "train_diag": {
       "binary_accuracy": 1.0,
       "precision": 1.0,
