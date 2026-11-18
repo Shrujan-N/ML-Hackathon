@@ -1,0 +1,112 @@
+[
+  {
+    "name": "Model 1: Logistic Regression",
+    "family": "Linear and probabilistic",
+    "key_config": "C=1.0, solver=lbfgs, max_iter=300, StandardScaler",
+    "artifact_path": "artifacts/model1_logistic_regression.joblib",
+    "input_preprocessing": "artifacts/feature_scaler.joblib",
+    "train_time_sec": 12.784,
+    "inference_time_sec": 0.035,
+    "train_diag": {
+      "binary_accuracy": 0.96655,
+      "precision": 0.8391239163027182,
+      "recall": 0.8169702354509107,
+      "macro_f1": 0.9046867935844376,
+      "log_loss": 0.09550141994606848,
+      "top1_accuracy": 0.850375,
+      "route_continuity": 0.6047738693467337,
+      "confusion_matrix": [
+        [
+          141775,
+          2468
+        ],
+        [
+          2884,
+          12873
+        ]
+      ]
+    },
+    "cv": {
+      "cv_macro_f1_mean": 0.8974790011721889,
+      "cv_macro_f1_std": 0.016914987698573393,
+      "cv_top1_mean": 0.8330950412292829,
+      "cv_top1_std": 0.030631423644450026,
+      "cv_log_loss_mean": 0.09945435062148225,
+      "cv_continuity_mean": 0.9271512967374539
+    },
+    "test": {
+      "binary_accuracy": 0.966884133611691,
+      "precision": 0.8343938995529845,
+      "recall": 0.8323365858776623,
+      "macro_f1": 0.9074896116086077,
+      "log_loss": 0.0933858317643126,
+      "top1_accuracy": 0.8533402922755741,
+      "route_continuity": 0.9308093994778068,
+      "confusion_matrix": [
+        [
+          169389,
+          3149
+        ],
+        [
+          3196,
+          15866
+        ]
+      ]
+    }
+  },
+  {
+    "name": "Model 2: Distance-Weighted KNN",
+    "family": "Instance-based",
+    "key_config": "k=15, weights=distance, kd_tree, 32k trip-stratified ref",
+    "artifact_path": "artifacts/model2_distance_weighted_knn.joblib",
+    "input_preprocessing": "artifacts/feature_scaler.joblib",
+    "train_time_sec": 0.068,
+    "inference_time_sec": 11.577,
+    "train_diag": {
+      "binary_accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "macro_f1": 1.0,
+      "log_loss": 1.0000000494736474e-07,
+      "top1_accuracy": 0.980625,
+      "route_continuity": 0.31346153846153846,
+      "confusion_matrix": [
+        [
+          28862,
+          0
+        ],
+        [
+          0,
+          3138
+        ]
+      ]
+    },
+    "cv": {
+      "cv_macro_f1_mean": 0.8922469078156887,
+      "cv_macro_f1_std": 0.010510988544432803,
+      "cv_top1_mean": 0.8234375,
+      "cv_top1_std": 0.02107927744255008,
+      "cv_log_loss_mean": 0.1532665752795534,
+      "cv_continuity_mean": 0.2743589743589744
+    },
+    "test": {
+      "binary_accuracy": 0.9652818371607516,
+      "precision": 0.8335662831953553,
+      "recall": 0.8134508446123176,
+      "macro_f1": 0.9020672380957926,
+      "log_loss": 0.14454375690608465,
+      "top1_accuracy": 0.8392484342379958,
+      "route_continuity": 0.9170234986945169,
+      "confusion_matrix": [
+        [
+          169442,
+          3096
+        ],
+        [
+          3556,
+          15506
+        ]
+      ]
+    }
+  }
+]

@@ -1,0 +1,3 @@
+Model,Algorithm Family,Key Configuration,CV Macro F1-score,Top-1 Accuracy,Route continuity,Student-Test Macro F1-score,Log Loss,Inference Time,Training Time,Student-Test Precision,Student-Test Recall,Student-Test Binary Accuracy
+Model 1: Logistic Regression,Linear and probabilistic,"C=1.0, solver=lbfgs, max_iter=300, StandardScaler",0.8975,0.8533,0.9308,0.9075,0.0934,0.04s,12.78s,0.8344,0.8323,0.9669
+Model 2: Distance-Weighted KNN,Instance-based,"k=15, weights=distance, kd_tree, 32k trip-stratified ref",0.8922,0.8392,0.917,0.9021,0.1445,11.58s,0.07s,0.8336,0.8135,0.9653
