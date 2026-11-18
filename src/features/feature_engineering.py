@@ -336,7 +336,8 @@ def build_feature_datasets(repo_root, k=10, m_pre=100):
     scaler.fit(train_df[FEATURE_COLUMNS].values)
 
     scaler_path = os.path.join(art_dir, "feature_scaler.joblib")
-    joblib.dump(scaler, scaler_path)
+    with open(scaler_path, "wb") as f:
+        joblib.dump(scaler, f)
 
     schema = {
         "candidate_k": k,
@@ -355,8 +356,13 @@ def build_feature_datasets(repo_root, k=10, m_pre=100):
         json.dump(schema, f, indent=2)
 
     print("Saving processed candidate datasets...")
-    joblib.dump(train_df, os.path.join(proc_dir, "train_candidates.pkl"), compress=3)
-    joblib.dump(test_df, os.path.join(proc_dir, "student_test_candidates.pkl"), compress=3)
+    for fname, obj in [("train_candidates.pkl", train_df), ("student_test_candidates.pkl", test_df)]:
+        out_p = os.path.join(proc_dir, fname)
+        tmp_p = out_p + ".tmp"
+        with open(tmp_p, "wb") as f:
+            joblib.dump(obj, f, compress=3)
+        os.replace(tmp_p, out_p)
+
     test_df.to_csv(os.path.join(proc_dir, "student_test_candidates.csv"), index=False)
     train_df.head(50000).to_csv(os.path.join(proc_dir, "train_candidates_sample.csv"), index=False)
     train_df.to_csv(os.path.join(proc_dir, "train_candidates.csv.gz"), index=False, compression="gzip")
