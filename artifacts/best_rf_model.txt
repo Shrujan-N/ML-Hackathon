@@ -1,0 +1,1 @@
+C:\Users\Aryan Nangarath\OneDrive\Documents\GitHub\ML-Hackathon\artifacts\rf_model.joblib

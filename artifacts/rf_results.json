@@ -1,0 +1,24 @@
+[
+  {
+    "model_name": "RandomForest",
+    "val_top1_acc": 0.57232,
+    "val_macro_f1": 0.677981,
+    "val_log_loss": 0.4577,
+    "val_route_continuity": 0.450911,
+    "student_test_top1_acc": 0.85595,
+    "student_test_macro_f1": 0.898761,
+    "student_test_log_loss": 0.17089,
+    "student_route_continuity": 0.224178
+  },
+  {
+    "model_name": "ExtraTrees",
+    "val_top1_acc": 0.56825,
+    "val_macro_f1": 0.687755,
+    "val_log_loss": 0.579349,
+    "val_route_continuity": 0.450095,
+    "student_test_top1_acc": 0.853497,
+    "student_test_macro_f1": 0.900582,
+    "student_test_log_loss": 0.18631,
+    "student_route_continuity": 0.223655
+  }
+]
