@@ -1,0 +1,24 @@
+{
+  "backend": "lightgbm",
+  "metric": "top1_acc",
+  "direction": "maximize",
+  "best_value": 0.851888043669426,
+  "best_params": {
+    "n_estimators": 550,
+    "learning_rate": 0.02885961421575738,
+    "num_leaves": 101,
+    "min_child_samples": 39,
+    "subsample": 0.8604237427744246,
+    "colsample_bytree": 0.8963748581109259,
+    "reg_alpha": 0.007357325019000267,
+    "reg_lambda": 0.004426223422675471
+  },
+  "n_trials_total": 30,
+  "n_trials_complete": 26,
+  "n_trials_pruned": 4,
+  "cv": {
+    "n_splits": 3,
+    "trip_subset": 0.5,
+    "seed": 42
+  }
+}
