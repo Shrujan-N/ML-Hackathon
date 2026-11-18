@@ -1,8 +1,3 @@
-"""
-model_loader.py — Loads a joblib-serialised scikit-learn model and exposes
-a predict() helper that works with a Pandas DataFrame of feature columns.
-"""
-
 import logging
 import os
 from pathlib import Path
@@ -14,7 +9,6 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-# 16 feature columns the model was trained on, in order.
 FEATURE_COLUMNS = [
     "dist_to_arc_m",
     "dist_min_diff_m",
@@ -36,50 +30,42 @@ FEATURE_COLUMNS = [
 
 
 def load_model(path: str) -> Tuple[Optional[object], str]:
-    """
-    Load a joblib model from *path*.
-
-    Returns
-    -------
-    (model, model_name)
-        model      — the loaded sklearn estimator, or None if file not found.
-        model_name — base filename without extension, or "none".
-    """
     model_path = Path(path)
     if not model_path.exists():
-        logger.warning("Model file not found: %s — running in no-model mode.", path)
         return None, "none"
-
     try:
         model = joblib.load(model_path)
-        model_name = model_path.stem  # e.g. "rf_model" or "et_model"
+        if hasattr(model, "n_jobs"):
+            model.n_jobs = 1
+        elif isinstance(model, dict) and "model" in model:
+            inner = model["model"]
+            if hasattr(inner, "n_jobs"):
+                inner.n_jobs = 1
+            if hasattr(inner, "clf") and hasattr(inner.clf, "n_jobs"):
+                inner.clf.n_jobs = 1
+        model_name = model_path.stem
         logger.info("Loaded model '%s' from %s", model_name, path)
         return model, model_name
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.error("Failed to load model from %s: %s", path, exc)
         return None, "none"
 
 
 def predict(model, feature_df: pd.DataFrame) -> np.ndarray:
-    """
-    Run predict_proba on *feature_df* (must contain FEATURE_COLUMNS).
+    if isinstance(model, dict) and "model" in model and "feature_cols" in model:
+        X = feature_df[model["feature_cols"]].values.astype(np.float32)
+        if model.get("needs_scaling") and model.get("scaler") is not None:
+            X = model["scaler"].transform(X)
+        proba = model["model"].predict_proba(X)
+        return proba[:, 1] if proba.ndim == 2 else proba.ravel()
 
-    Returns
-    -------
-    np.ndarray of shape (n_rows,)
-        Positive-class probability for each candidate row.
-    """
     X = feature_df[FEATURE_COLUMNS].values
-    proba = model.predict_proba(X)  # shape (n_rows, 2)
-    return proba[:, 1]  # positive-class scores
+    proba = model.predict_proba(X)
+    return proba[:, 1] if proba.ndim == 2 else proba.ravel()
 
 
 def auto_load_model(artifacts_dir: str = "artifacts") -> Tuple[Optional[object], str]:
-    """
-    Try to load et_model.joblib first (usually better), fall back to rf_model.joblib.
-    Returns (model, model_name).
-    """
-    for name in ("et_model.joblib", "rf_model.joblib"):
+    for name in ("final_model.joblib", "et_model.joblib", "rf_model.joblib"):
         candidate = os.path.join(artifacts_dir, name)
         model, model_name = load_model(candidate)
         if model is not None:

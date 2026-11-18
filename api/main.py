@@ -181,34 +181,41 @@ def predict_endpoint(request: PredictRequest):
 
     t_start = time.perf_counter()
 
-    predictions: List[ObservationPrediction] = []
-
+    # Batch all candidates for the trip into one matrix for fast inference
+    all_rows = []
+    obs_slices = []
+    offset = 0
     for obs in request.observations:
         if not obs.candidates:
             continue
+        for c in obs.candidates:
+            all_rows.append({col: getattr(c, col) for col in FEATURE_COLUMNS})
+        next_offset = offset + len(obs.candidates)
+        obs_slices.append((obs, offset, next_offset))
+        offset = next_offset
 
-        feature_df = _candidates_to_df(obs.candidates)
-
-        # Import here to avoid circular dependency at module level
+    predictions: List[ObservationPrediction] = []
+    if all_rows:
         from api.model_loader import predict as model_predict
-        scores = model_predict(_model, feature_df)  # shape (n_cands,)
+        feature_df = pd.DataFrame(all_rows, columns=FEATURE_COLUMNS)
+        all_scores_arr = model_predict(_model, feature_df)
 
-        arc_ids = [c.candidate_arc_id for c in obs.candidates]
-        best_idx = int(np.argmax(scores))
-
-        all_scores = [
-            ArcScore(candidate_arc_id=arc_id, score=float(score))
-            for arc_id, score in zip(arc_ids, scores)
-        ]
-
-        predictions.append(
-            ObservationPrediction(
-                obs_idx=obs.obs_idx,
-                predicted_arc_id=arc_ids[best_idx],
-                confidence=float(scores[best_idx]),
-                all_scores=all_scores,
+        for obs, start, end in obs_slices:
+            scores = all_scores_arr[start:end]
+            arc_ids = [c.candidate_arc_id for c in obs.candidates]
+            best_idx = int(np.argmax(scores))
+            all_scores = [
+                ArcScore(candidate_arc_id=arc_id, score=float(score))
+                for arc_id, score in zip(arc_ids, scores)
+            ]
+            predictions.append(
+                ObservationPrediction(
+                    obs_idx=obs.obs_idx,
+                    predicted_arc_id=arc_ids[best_idx],
+                    confidence=float(scores[best_idx]),
+                    all_scores=all_scores,
+                )
             )
-        )
 
     infer_ms = (time.perf_counter() - t_start) * 1000.0
 
@@ -241,50 +248,51 @@ def evaluate_endpoint(request: EvaluateRequest):
     # Lazily import sklearn metrics to keep startup fast
     from sklearn.metrics import f1_score, log_loss
 
-    all_true_labels: List[int] = []      # binary (1 if label matches predicted)
-    all_pred_proba: List[float] = []     # positive-class proba for each candidate
-    all_true_binary: List[int] = []      # ground truth binary per observation
+    all_true_labels: List[int] = []
+    all_pred_proba: List[float] = []
     top1_hits = 0
     obs_predictions: List[ObservationPrediction] = []
 
     from api.model_loader import predict as model_predict
 
+    all_rows = []
+    obs_slices = []
+    offset = 0
     for obs in request.observations:
         if not obs.candidates:
             continue
+        for c in obs.candidates:
+            all_rows.append({col: getattr(c, col) for col in FEATURE_COLUMNS})
+        next_offset = offset + len(obs.candidates)
+        obs_slices.append((obs, offset, next_offset))
+        offset = next_offset
 
-        feature_df = _candidates_to_df(obs.candidates)
-        scores = model_predict(_model, feature_df)
+    if all_rows:
+        feature_df = pd.DataFrame(all_rows, columns=FEATURE_COLUMNS)
+        all_scores_arr = model_predict(_model, feature_df)
 
-        arc_ids = [c.candidate_arc_id for c in obs.candidates]
-        best_idx = int(np.argmax(scores))
-        predicted_arc = arc_ids[best_idx]
+        for obs, start, end in obs_slices:
+            scores = all_scores_arr[start:end]
+            arc_ids = [c.candidate_arc_id for c in obs.candidates]
+            best_idx = int(np.argmax(scores))
+            predicted_arc = arc_ids[best_idx]
+            top1_hits += int(predicted_arc == obs.true_arc_id)
 
-        # Ground truth
-        is_correct = int(predicted_arc == obs.true_arc_id)
-        top1_hits += is_correct
+            for arc_id, score in zip(arc_ids, scores):
+                all_true_labels.append(1 if arc_id == obs.true_arc_id else 0)
+                all_pred_proba.append(float(score))
 
-        # Build binary labels per candidate (1 if == true_arc_id)
-        for arc_id, score in zip(arc_ids, scores):
-            all_true_labels.append(1 if arc_id == obs.true_arc_id else 0)
-            all_pred_proba.append(float(score))
-
-        # For macro F1: per-observation binary prediction
-        all_true_binary.append(1)  # true answer exists in candidates
-        # We only record whether top-1 is right; use binary arrays for f1
-        # (ground truth = 1 for the true arc, compare against argmax prediction)
-
-        obs_predictions.append(
-            ObservationPrediction(
-                obs_idx=obs.obs_idx,
-                predicted_arc_id=predicted_arc,
-                confidence=float(scores[best_idx]),
-                all_scores=[
-                    ArcScore(candidate_arc_id=aid, score=float(s))
-                    for aid, s in zip(arc_ids, scores)
-                ],
+            obs_predictions.append(
+                ObservationPrediction(
+                    obs_idx=obs.obs_idx,
+                    predicted_arc_id=predicted_arc,
+                    confidence=float(scores[best_idx]),
+                    all_scores=[
+                        ArcScore(candidate_arc_id=aid, score=float(s))
+                        for aid, s in zip(arc_ids, scores)
+                    ],
+                )
             )
-        )
 
     n_obs = len(request.observations)
     top1_acc = top1_hits / n_obs if n_obs > 0 else 0.0
