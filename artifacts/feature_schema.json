@@ -1,0 +1,60 @@
+{
+  "candidate_k": 10,
+  "pre_candidates_m": 100,
+  "metadata_columns": [
+    "trip_id",
+    "obs_idx",
+    "timestamp",
+    "candidate_arc_id",
+    "from_node",
+    "to_node",
+    "true_arc_id"
+  ],
+  "feature_columns": [
+    "dist_to_arc_m",
+    "dist_min_diff_m",
+    "dist_ratio_to_min",
+    "cand_rank",
+    "proj_fraction",
+    "dist_to_from_node_m",
+    "dist_to_to_node_m",
+    "arc_length_m",
+    "heading_diff_rad",
+    "heading_cos",
+    "heading_sin",
+    "gps_speed_mps",
+    "dt_prev_s",
+    "prev_gps_dist_to_arc_m",
+    "next_gps_dist_to_arc_m",
+    "is_connected_from_prev_top1"
+  ],
+  "target_column": "label",
+  "scaler_path": "artifacts/feature_scaler.joblib",
+  "scaler_fit_partition": "train_only",
+  "train_filter": "removed off-route outlier points (>60m from reference route, e.g. parking/detour drift in 00000033 and 00000054)",
+  "student_test_filter": "none (100% of observations retained)",
+  "stats": {
+    "train": {
+      "n_trips": 80,
+      "n_obs_raw": 208417,
+      "n_obs_kept": 186093,
+      "n_candidate_rows": 1860930,
+      "positive_rows": 183580,
+      "raw_candidate_miss_rate_pct": 7.856,
+      "active_candidate_miss_rate_pct": 1.35,
+      "geom_top1_acc_raw_pct": 49.294,
+      "geom_top1_acc_active_pct": 54.853
+    },
+    "student_test": {
+      "n_trips": 10,
+      "n_obs_raw": 19160,
+      "n_obs_kept": 19160,
+      "n_candidate_rows": 191600,
+      "positive_rows": 19062,
+      "raw_candidate_miss_rate_pct": 0.511,
+      "active_candidate_miss_rate_pct": 0.511,
+      "geom_top1_acc_raw_pct": 54.207,
+      "geom_top1_acc_active_pct": 54.207
+    }
+  }
+}

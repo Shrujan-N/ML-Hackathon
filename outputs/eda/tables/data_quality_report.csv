@@ -1,0 +1,3 @@
+partition,missing_or_nan_values,non_monotonic_timestamps,pct_steps_exactly_1s,steps_gt_2s,steps_gt_5s,max_single_gap_s,total_isolated_nodes,trips_with_multi_components,disconnected_route_transitions,trips_with_median_offset_gt_30m
+train,0,0,96.5,2937,1216,153064.0,0,79,13,2
+student_test,0,0,98.62,138,44,210.0,0,10,1,0

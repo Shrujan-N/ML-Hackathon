@@ -1,0 +1,3 @@
+partition,n_trips,total_files,total_gps_points,mean_gps_per_trip,min_gps_per_trip,max_gps_per_trip,total_nodes,total_arcs,total_route_arcs,median_noise_dist_m,p95_noise_dist_m
+train,80,320,208417,2605.2,361,19313,1933485,3876904,31336,5.67,141.23
+student_test,10,40,19160,1916.0,262,3958,90689,185041,3477,5.25,16.8
