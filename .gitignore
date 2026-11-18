@@ -1,4 +1,5 @@
-data/raw/
+data/raw/train/
+!data/raw/student_test/
 data/processed/*.csv.gz
 data/processed/*.parquet
 data/processed/*.npz
