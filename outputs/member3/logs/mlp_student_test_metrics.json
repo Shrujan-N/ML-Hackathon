@@ -1,0 +1,52 @@
+{
+  "model_name": "Model 5: MLP Neural Network",
+  "algorithm_family": "Neural networks",
+  "device": "cuda",
+  "config": {
+    "hidden_dims": [
+      128,
+      64,
+      32
+    ],
+    "dropout": 0.15,
+    "use_batchnorm": true,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "batch_size": 2048,
+    "max_epochs": 30,
+    "patience": 5,
+    "val_fraction": 0.15,
+    "auto_pos_weight": false,
+    "scale_features": true,
+    "random_state": 42,
+    "device": "auto"
+  },
+  "train_rows": 1860930,
+  "train_trips": 80,
+  "student_test_rows": 191600,
+  "student_test_trips": 10,
+  "epochs_trained": 30,
+  "best_epoch": 28,
+  "best_val_loss": 0.07083926704876063,
+  "best_val_macro_f1": 0.9240682794513622,
+  "train_time_s": 1235.8760023000068,
+  "student_test_inference_time_s": 0.2911940999911167,
+  "student_test_accuracy": 0.9712212943632568,
+  "student_test_precision_pos": 0.8668760831889082,
+  "student_test_recall_pos": 0.8396810408141853,
+  "student_test_macro_f1": 0.9185552157584349,
+  "student_test_pos_f1": 0.853061877098545,
+  "student_test_log_loss": 0.0719206991740226,
+  "student_test_obs_top1_accuracy": 0.8570459290187892,
+  "student_test_confusion_matrix": [
+    [
+      170080,
+      2458
+    ],
+    [
+      3056,
+      16006
+    ]
+  ],
+  "note": "Preliminary train->student_test run; official 5-fold GroupKFold CV awaiting Member 2 harness."
+}

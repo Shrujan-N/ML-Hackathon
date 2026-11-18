@@ -1,0 +1,44 @@
+{
+  "model_name": "Model 6: RBF SVM (Nystroem Kernel Approximation)",
+  "algorithm_family": "Kernel-based",
+  "resolved_mode": "nystroem",
+  "config": {
+    "mode": "auto",
+    "C": 1.0,
+    "gamma": "scale",
+    "class_weight": null,
+    "nystroem_components": 256,
+    "nystroem_gamma": null,
+    "nystroem_fit_samples": 50000,
+    "exact_svc_max_samples": 25000,
+    "chunk_size": 50000,
+    "sgd_epochs": 6,
+    "calibration_fraction": 0.1,
+    "scale_features": true,
+    "random_state": 42
+  },
+  "train_rows": 1860930,
+  "train_trips": 80,
+  "student_test_rows": 191600,
+  "student_test_trips": 10,
+  "train_time_s": 125.65340540002217,
+  "student_test_inference_time_s": 1.4052850999869406,
+  "student_test_accuracy": 0.9667745302713987,
+  "student_test_precision_pos": 0.8623287671232877,
+  "student_test_recall_pos": 0.7925716084356311,
+  "student_test_macro_f1": 0.9038069751555964,
+  "student_test_pos_f1": 0.8259799901590946,
+  "student_test_log_loss": 0.09351465231204403,
+  "student_test_obs_top1_accuracy": 0.8492693110647181,
+  "student_test_confusion_matrix": [
+    [
+      170126,
+      2412
+    ],
+    [
+      3954,
+      15108
+    ]
+  ],
+  "note": "Preliminary train->student_test run; official 5-fold GroupKFold CV awaiting Member 2 harness."
+}
